@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+/* Additional CSS */
+.dropdown-menu {
+  background-color: #daded4 !important;
+}
+
+/*  gameRoom */
+.optionDisabled {
+  color: gray;
+}
+.optionEnabled {
+  color: black;
+}
