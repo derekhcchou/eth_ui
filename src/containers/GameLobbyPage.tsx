@@ -1,5 +1,5 @@
 
-import React, {useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
 import {Card} from "react-bootstrap";
 import {AppStateContext} from "../context/AppContext";
 import {styles} from "../helpers/styles"
@@ -15,11 +15,6 @@ const GameLobbyPage: React.FC<Props> = ({
   const history = useHistory();
   const context = useContext(AppStateContext);
   const {gameInfo, userData} = context.initAppState;
-
-  useEffect(()=>{
-
-  })
-
 
   return (
     <div>

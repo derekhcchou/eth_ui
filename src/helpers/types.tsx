@@ -24,6 +24,15 @@
   export interface IUserDataType{
     address: string,
     balance: number,
+    web3: any,
+    networkId: number,
+    tokenAddress: string,
+    tokenName: string,
+    erc20: any,
+    erc20Balance: string, // balance in the wallet for defined tokenName
+    dappToken: any,
+    dappTokenAddress: string,
+    tokenFarm: any,
     gameList: IUserGame[];
   }
 
@@ -31,6 +40,15 @@
     address:"",
     balance:0,
     gameList:[],
+    web3: {},
+    networkId: 0,
+    tokenAddress: "",
+    tokenName: "",
+    erc20: {},
+    erc20Balance: "", // balance in the wallet for defined tokenName
+    dappToken: {},
+    dappTokenAddress: "",
+    tokenFarm: {},
   };
 
   export interface IAppStateType{

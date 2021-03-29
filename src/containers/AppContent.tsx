@@ -12,6 +12,7 @@ import {setSessionObject,resetSessionStorage, getSessionObject} from "../context
 import {checkUserHasSingedIn} from "../helpers/utility"
 import Footer from "./Footer"
 import { isEqual } from "lodash";
+import {loadWeb3, loadBlockchainData} from "../helpers/accountHelper"
 
 const AppContent: React.FC = ({}) =>{
     // useContext
@@ -36,46 +37,40 @@ const AppContent: React.FC = ({}) =>{
         history.push("/");
      }
 
-     const storeUserData = () => {
-         const newUser: IUserDataType = {
-             address:"0x1111111111",
-             balance:20,
-             gameList:[]
-         }
-         setSessionObject("userData", newUser );
-         context.dispatch({
-            userData:newUser,
-            gameInfo:[],
-         });
-         setShowWalletModal(false);
-         history.push("/gameLobby")
+     const storeUserData = async () => {
+        await loadWeb3();
+        const accountDetails = await loadBlockchainData();
+        console.log("accountDetails",accountDetails);
+        context.dispatch({
+            userData:accountDetails
+        })
+        //  const newUser: IUserDataType = {
+        //      address:"0x1111111111",
+        //      balance:20,
+        //      gameList:[]
+        //  }
+        //  setSessionObject("userData", newUser );
+        //  context.dispatch({
+        //     userData:newUser,
+        //     gameInfo:[],
+        //  });
+        //  setShowWalletModal(false);
+        //  history.push("/gameLobby")
      }
 
-     useEffect(()=>{
-        if(gameInfo.length === 0 ){
-            const getGameInfo:IGameInfoType[] =gameListMock;
-            context.dispatch({
-                gameInfo:getGameInfo,
-            });
-            setSessionObject("gameInfo", getGameInfo);
-        }
-    });
-
-    useEffect(()=>{
-        const userSession =  getSessionObject("userData") as IUserDataType;
-        console.log("userData", userData);
-        console.log("userSession", userSession)
-        if(!isEqual(userData,userSession)){
-            if(userData.gameList.length > userSession.gameList.length){
-                setSessionObject("userData", userData);
-                console.log("changing userData", userData)
-            }
-            else if(userData.gameList.length < userSession.gameList.length){
-                context.dispatch({userData: userSession})
-                console.log("changing userData", userSession)
-            }
-        }
-    },[userData])
+    // useEffect(()=>{
+    //     const userSession =  getSessionObject("userData") as IUserDataType;
+    //     if(!isEqual(userData,userSession)){
+    //         if(userData.gameList.length > userSession.gameList.length){
+    //             setSessionObject("userData", userData);
+    //             console.log("changing userData", userData)
+    //         }
+    //         else if(userData.gameList.length < userSession.gameList.length){
+    //             context.dispatch({userData: userSession})
+    //             console.log("changing userData", userSession)
+    //         }
+    //     }
+    // },[userData])
 
       return (
         <>
@@ -100,7 +95,7 @@ const AppContent: React.FC = ({}) =>{
                 </Modal.Header>
                 <Modal.Body style={styles.modalStyle}>
                     <Button variant="outline-dark"  onClick={storeUserData} >
-                        Connect to WalletConnect :))
+                        MetaMask
                     </Button>
                 </Modal.Body>
                 <Modal.Footer style={styles.modalStyle}>

@@ -1,7 +1,6 @@
 import React from "react"
 import {Navbar, Button, NavDropdown} from "react-bootstrap"
 import {styles} from "../helpers/styles"
-import {AppStateContext} from "../context/AppContext"
 import {Link, useLocation} from "react-router-dom";
 import { IUserDataType } from "../helpers/types";
 
@@ -19,7 +18,7 @@ const NavBar: React.FC<Props> = ({
     handleSingOut,
     userData
 }) =>{
-    const dropdownTitle = `Hi, ${userData.address}`;
+    const dropdownTitle = `Hi, ${userData.address.slice(0,5)}...`;
     const location = useLocation();
     const showGameLobbyLink = !!userData.address && location.pathname !== "/gameLobby";
     return (

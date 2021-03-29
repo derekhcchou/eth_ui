@@ -1,5 +1,5 @@
 
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import Web3 from 'web3';
 import {AppStateContext} from "../context/AppContext";
 import {Card, Container, Row, Col, Button} from "react-bootstrap";
@@ -8,6 +8,8 @@ import {styles} from "../helpers/styles";
 import {IGameInfoType} from "../helpers/types"
 import {checkUserHasSingedIn} from "../helpers/utility"
 import { isArray } from 'lodash';
+import { gameListMock } from './mockData';
+import { setSessionObject } from '../context/sessionStore';
 
 type Props = {
   handleShow: any,
@@ -17,7 +19,23 @@ const LandingPage: React.FC<Props> = ({handleShow}) =>{
     const history = useHistory();
     const context = useContext(AppStateContext);
     const {gameInfo, userData} = context.initAppState;
-    const threeGames = gameInfo.slice(0, 3);
+    const [threeGames, setThreeGames]= useState<IGameInfoType[]>([]);
+
+    // Might need to move to AppContent (目前懶得用：）)
+    useEffect(()=>{
+      if(!!!threeGames){
+        if(isArray(gameInfo) && gameInfo.length > 3){
+          setThreeGames(gameInfo.slice(0, 3));
+        }else {
+          const getGameInfo:IGameInfoType[] =gameListMock;
+          context.dispatch({
+              gameInfo:getGameInfo,
+          });
+          setSessionObject("gameInfo", getGameInfo);
+          setThreeGames(getGameInfo.slice(0,3));
+        }
+      }
+    });
 
     const goToGameLobby = () =>{
       if(checkUserHasSingedIn(userData)){

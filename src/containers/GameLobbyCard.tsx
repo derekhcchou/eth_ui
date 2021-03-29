@@ -1,10 +1,10 @@
 
-import React, {useContext, useEffect} from 'react';
-import {Card, Container, Row, Col, Button} from "react-bootstrap";
+import React, {useContext} from 'react';
+import {Card, Button} from "react-bootstrap";
 import {AppStateContext} from "../context/AppContext";
 import {styles} from "../helpers/styles"
 import {IGameInfoType} from "../helpers/types"
-import {ensureIsDate, countDownTimer, priceFormatter, numberWithCommas} from "../helpers/utility"
+import { countDownTimer, priceFormatter, numberWithCommas} from "../helpers/utility"
 import {useHistory} from "react-router-dom";
 
 type Props = {
