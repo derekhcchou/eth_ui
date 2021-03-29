@@ -2,12 +2,10 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {AppStateContext} from "../context/AppContext";
 import {Card, Container, Row, Col, Button, Modal} from "react-bootstrap";
-import {Link, useHistory} from "react-router-dom"
-import {gameRuleMap} from "../helpers/contentMap";
 import {styles} from "../helpers/styles";
-import {IGameInfoType, IUserGame} from "../helpers/types";
-import {numberWithCommas, priceFormatter, countDownTimer} from "../helpers/utility";
-import {isArray, isNumber} from "lodash";
+import {numberWithCommas} from "../helpers/utility";
+import {isNumber} from "lodash";
+import { loadBlockchainData, stakeTokens, unstakeTokens } from '../helpers/accountHelper';
 
 const PersonalPage: React.FC<{}>=({})=>{
     
@@ -17,7 +15,7 @@ const PersonalPage: React.FC<{}>=({})=>{
     const [reloadWarningMsg, setReloadWarningMsg] = useState<string>("");
     const [isReloadBtmDisabled, setReloadBtmDisabled] = useState<boolean>(true);
     
-    const context = React.useContext(AppStateContext);
+    const context = useContext(AppStateContext);
     const {userData} = context.initAppState;
 
     const validateReloadValue = (value:string) =>{
@@ -35,10 +33,19 @@ const PersonalPage: React.FC<{}>=({})=>{
         }
     }
     
-    const submitReloadValue = () =>{
+    const submitReloadValue = async () =>{
         // we should send this back and retrieve the latest data from contract storage
-        let newUserData = userData;
-        newUserData.balance = userData.balance + Number(reloadValue);
+        await stakeTokens(userData, reloadValue);
+        const newUserData = await loadBlockchainData();
+        context.dispatch({
+            userData: newUserData
+        })
+        setShowReloadModal(false);
+    }
+
+    const withdrawBalance = async ()=>{
+        await unstakeTokens(userData);
+        const newUserData = await loadBlockchainData();
         context.dispatch({
             userData: newUserData
         })
@@ -61,14 +68,27 @@ const PersonalPage: React.FC<{}>=({})=>{
                 <Row className="justify-content-md-center">
                     <Col xs={3}>
                         <Card.Title>Account Balance: </Card.Title>
-                        <Card.Subtitle> {priceFormatter(userData.balance)} ETH </Card.Subtitle>
+                        <Card.Subtitle> 
+                            <label style={styles.balance}>{numberWithCommas(userData.balance)} {userData.tokenName} </label>
+                        </Card.Subtitle>
                         <Card.Body>
-                            <a href="#" onClick={()=>{setShowReloadModal(true)}}>Reload Now!</a>
+                            <a href="#" onClick={()=>{setShowReloadModal(true)}}>Reload Now!</a><br />
+                            <a href="#" onClick={withdrawBalance}>Withdraw</a>
                         </Card.Body>
                         </Col>
                     </Row>
                 </Container>
             </Card>
+
+        {/* Connected Wallet */}
+        <Card style={styles.introCardStyle}>
+            <Card.Title>Connected Wallet</Card.Title>
+            <Card.Subtitle>  </Card.Subtitle>
+            <Card.Body>
+                Address: {userData.address} <br />
+                Wallect Balance: {`${Number(userData.erc20Balance)/1000000000000000000} ${userData.tokenName}`}<br />
+            </Card.Body>
+        </Card>
 
         {/* NFT Section */}
         <Card style={styles.introCardStyle}>
@@ -116,7 +136,7 @@ const PersonalPage: React.FC<{}>=({})=>{
           </Modal.Header>
           <Modal.Body style={styles.modalStyle}>
               <label>How much would you like to reload? </label><br />
-              <label>Your current account balance is {priceFormatter(userData.balance)} ETH</label><br />
+              <label>Your current account balance is {numberWithCommas(userData.balance)} {userData.tokenName}</label><br />
               <input 
                   value={reloadValue} 
                   onChange={

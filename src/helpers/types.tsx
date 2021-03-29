@@ -1,3 +1,15 @@
+declare global {
+  interface Window {
+    ethereum: any;
+    web3: any;
+  }
+
+  interface TokenFarm {
+    _address: string;
+    methods: any;
+  }
+}
+  
   export interface IGameInfoType{
     gameId: number,
     gameTitle: string,
@@ -24,15 +36,16 @@
   export interface IUserDataType{
     address: string,
     balance: number,
-    web3: any,
+    // web3: any,
     networkId: number,
     tokenAddress: string,
     tokenName: string,
     erc20: any,
     erc20Balance: string, // balance in the wallet for defined tokenName
-    dappToken: any,
+    // dappToken: any,
     dappTokenAddress: string,
-    tokenFarm: any,
+    stakingBalance: string,
+    tokenFarm: TokenFarm,
     gameList: IUserGame[];
   }
 
@@ -40,15 +53,17 @@
     address:"",
     balance:0,
     gameList:[],
-    web3: {},
     networkId: 0,
-    tokenAddress: "",
+    tokenAddress: "", // defined token address (e.g. address for FAU)
     tokenName: "",
-    erc20: {},
     erc20Balance: "", // balance in the wallet for defined tokenName
-    dappToken: {},
     dappTokenAddress: "",
+    stakingBalance:"",
+    // web3: {},
+    erc20: {},
+    //@ts-ignore
     tokenFarm: {},
+    // dappToken: {},
   };
 
   export interface IAppStateType{

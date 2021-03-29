@@ -4,6 +4,14 @@ export const styles = {
         background: "#A3BCB6"
     },
 
+    // account page
+    balance:{
+        "margin": "10px",
+        "text-align": "center",
+        "font-size":"2rem",
+        "font-weight": "800",
+    },
+
     // Landing Page
     gameRoomCardStyle:{
         "width":"20rem",

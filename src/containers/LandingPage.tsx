@@ -21,22 +21,6 @@ const LandingPage: React.FC<Props> = ({handleShow}) =>{
     const {gameInfo, userData} = context.initAppState;
     const [threeGames, setThreeGames]= useState<IGameInfoType[]>([]);
 
-    // Might need to move to AppContent (目前懶得用：）)
-    useEffect(()=>{
-      if(!!!threeGames){
-        if(isArray(gameInfo) && gameInfo.length > 3){
-          setThreeGames(gameInfo.slice(0, 3));
-        }else {
-          const getGameInfo:IGameInfoType[] =gameListMock;
-          context.dispatch({
-              gameInfo:getGameInfo,
-          });
-          setSessionObject("gameInfo", getGameInfo);
-          setThreeGames(getGameInfo.slice(0,3));
-        }
-      }
-    });
-
     const goToGameLobby = () =>{
       if(checkUserHasSingedIn(userData)){
         history.push("/gameLobby");
@@ -46,6 +30,12 @@ const LandingPage: React.FC<Props> = ({handleShow}) =>{
     }
 
     const gameDescriptionMax: number = 200;
+
+    useEffect(()=>{
+      if(threeGames.length === 0 && isArray(gameInfo) && gameInfo.length> 3){
+        setThreeGames(gameInfo.slice(0,3));
+      }
+    },[gameInfo])
 
     return (
       <div className="landing">
